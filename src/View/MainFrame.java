@@ -1,29 +1,40 @@
 package View;
 
-import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
-import javax.swing.JButton;
 import javax.swing.JTextField;
-import javax.swing.Box;
-import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
-import javax.swing.JScrollPane;
-import java.awt.Color;
 
-public class MainFrame extends JFrame {
+import Model.AccountManager;
+
+public class MainFrame extends JFrame implements ActionListener {
 	private JTable table;
 	private JTextField findaTf;
 	private JTextField findbTf;
 	private JTextArea expensestA;
-	private loginDialog login = new loginDialog();
-	public MainFrame() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	private AccountManager am;
+	public MainFrame(AccountManager am) {
+		this.am = am;
+		setSize(650, 500);
+		setTitle("PSB 은행");
+		addWindowListener(new WindowAdapter() {
+			public void windowClosing(WindowEvent e) {
+				dispose();
+			}
+		});
 		setResizable(false);
 		getContentPane().setLayout(null);
-		login.setVisible(true);
 		
 		JButton findaBtn = new JButton("검색");
 		findaBtn.setBounds(225, 155, 62, 29);
@@ -86,9 +97,15 @@ public class MainFrame extends JFrame {
 		
 		expensestA = new JTextArea();
 		scrollPane_1.setViewportView(expensestA);
+		
+		Dimension frameSize = this.getSize();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation((screenSize.width - frameSize.width)/2, (screenSize.height - frameSize.height)/2);
+		setVisible(true);
 	}
 	
-	public static void main(String args[]) {
-		new MainFrame();
+	public void actionPerformed(ActionEvent e) {
+		JButton btn = (JButton) e.getSource();
+		String text = btn.getText();
 	}
 }
