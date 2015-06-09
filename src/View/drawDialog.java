@@ -26,6 +26,7 @@ public class drawDialog extends JDialog implements ActionListener {
 	private DefaultTableModel model;
 	private int index;
 	private int amount;
+	private int grade;
 	
 	public drawDialog(AccountManager am, int index, DefaultTableModel model) {
 		setTitle("출금");
@@ -36,7 +37,7 @@ public class drawDialog extends JDialog implements ActionListener {
 		String num = tmp.getNum();
 		String name = tmp.getName();
 		this.amount = tmp.getAmount();
-		int grade = tmp.getGrade();
+		this.grade = tmp.getGrade();
 		
 		setSize(300, 220);
 		setResizable(false);
@@ -113,9 +114,10 @@ public class drawDialog extends JDialog implements ActionListener {
 	
 	public void actionPerformed(ActionEvent e) {
 		if (am.isDigit(moneyTf.getText())) {
-			if (amount < Integer
-					.parseInt(moneyTf.getText())
-					&& am.getAccounts().get(index).getGrade() == 1 && amount-Integer.parseInt(moneyTf.getText()) >= -10000000) {
+			if (amount >= Integer.parseInt(moneyTf.getText())
+					|| (amount < Integer.parseInt(moneyTf.getText())
+							&& grade == 1 && amount
+							- Integer.parseInt(moneyTf.getText()) >= -10000000)) {
 				am.draw(index, Integer.parseInt(moneyTf.getText()));
 
 				model.setRowCount(0);

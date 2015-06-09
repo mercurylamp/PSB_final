@@ -16,14 +16,14 @@ import javax.swing.table.DefaultTableModel;
 
 public class AccountManager {
 	private String id = "admin";
-	private char[] passwd = {'1', '1', '1', '1'};
+	private char[] passwd = { '1', '1', '1', '1' };
 	private ArrayList<Account> account = new ArrayList<Account>();
 	private HashSet<String> nums = new HashSet<String>();
-	
+
 	public AccountManager() {
 		openFile();
 	}
-	
+
 	public void addAccount(String name, int grade) {
 		Random rand = new Random();
 		String num = "110-";
@@ -37,42 +37,48 @@ public class AccountManager {
 			num += rand.nextInt(999999);
 		}
 		nums.add(num);
-		account.add(new Account(num,name,0,grade));
+		account.add(new Account(num, name, 0, grade));
 	}
-	
+
 	public void removeAccount(int index) {
 		nums.remove(account.get(index).getNum());
 		account.remove(index);
 	}
-	
+
 	public void deposit(int index, int money) {
-		SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/", Locale.KOREA);
+		SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/",
+				Locale.KOREA);
 		String today = date.format(new Date());
 		account.get(index).addAmount(money);
 		account.get(index).addList(today + money + "원 입금");
 	}
-	
+
 	public void draw(int index, int money) {
-		SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/", Locale.KOREA);
+		SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/",
+				Locale.KOREA);
 		String today = date.format(new Date());
 		account.get(index).drawAmount(money);
 		account.get(index).addList(today + money + "원 출금");
 	}
-	
+
 	public void transfer(int from, int to, int money) {
-		SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/", Locale.KOREA);
+		SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/",
+				Locale.KOREA);
 		String today = date.format(new Date());
 		account.get(from).drawAmount(money);
 		account.get(to).addAmount(money);
-		account.get(from).addList(today + account.get(to).getName() + "님께 " + money + "원 송금");
-		account.get(to).addList(today + account.get(from).getName() + "님께서 " + money + "원 송금");
+		account.get(from).addList(
+				today + account.get(to).getName() + "님께 " + money + "원 송금");
+		account.get(to).addList(
+				today + account.get(from).getName() + "님께서 " + money + "원 송금");
 	}
-	
+
 	public void interest() {
 		for (int i = 0; i < account.size(); i++) {
 			int amount = account.get(i).getAmount();
 			int grade = account.get(i).getGrade();
-			if (amount<0) continue;
+			if (amount < 0)
+				continue;
 			if (grade == 1) {
 				account.get(i).addAmount((int) (amount * 0.05));
 			} else if (grade == 2) {
@@ -80,16 +86,17 @@ public class AccountManager {
 			} else if (grade == 3) {
 				account.get(i).addAmount((int) (amount * 0.01));
 			}
-			SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/", Locale.KOREA);
+			SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/",
+					Locale.KOREA);
 			String today = date.format(new Date());
-			account.get(i).addList(today + (int) (amount*0.05) + "원 이자 발급");
+			account.get(i).addList(today + (int) (amount * 0.05) + "원 이자 발급");
 		}
 	}
-	
+
 	public void findAccount(int select, String s, DefaultTableModel model) {
 		ArrayList<Vector> top = new ArrayList<Vector>();
 		ArrayList<Vector> bottom = new ArrayList<Vector>();
-		for (int i=0;i<account.size();i++) {
+		for (int i = 0; i < account.size(); i++) {
 			Vector tmp = new Vector();
 			tmp.addElement(account.get(i).getNum());
 			tmp.addElement(account.get(i).getName());
@@ -121,15 +128,16 @@ public class AccountManager {
 		for (int i = 0; i < top.size(); i++) {
 			model.addRow(top.get(i));
 		}
-		for (int i=0;i<bottom.size();i++) {
+		for (int i = 0; i < bottom.size(); i++) {
 			model.addRow(bottom.get(i));
 		}
 	}
-	
+
 	public boolean loginCheck(String id, char[] passwd) {
 		if (this.id.equals(id)) {
-			int length = passwd.length > this.passwd.length ? this.passwd.length : passwd.length;
-			for (int i=0;i<length;i++) {
+			int length = passwd.length > this.passwd.length ? this.passwd.length
+					: passwd.length;
+			for (int i = 0; i < length; i++) {
 				if (this.passwd[i] != passwd[i])
 					return false;
 			}
@@ -137,19 +145,19 @@ public class AccountManager {
 		} else
 			return false;
 	}
-	
+
 	public ArrayList<Account> getAccounts() {
 		return account;
 	}
-	
+
 	public void setId(String id) {
 		this.id = id;
 	}
-	
+
 	public void setPasswd(char[] passwd) {
 		this.passwd = passwd;
 	}
-	
+
 	public boolean isDigit(String s) {
 		try {
 			Integer.parseInt(s);
@@ -158,7 +166,7 @@ public class AccountManager {
 		}
 		return true;
 	}
-	
+
 	public void saveFile() {
 		FileOutputStream fout = null;
 		ObjectOutputStream oos = null;
@@ -176,7 +184,7 @@ public class AccountManager {
 
 		}
 	}
-	
+
 	public void openFile() {
 		FileInputStream fin = null;
 		ObjectInputStream ois = null;
@@ -190,7 +198,7 @@ public class AccountManager {
 			ois.close();
 			fin.close();
 		} catch (Exception e) {
-			
+
 		}
 	}
 }

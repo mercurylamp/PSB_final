@@ -47,8 +47,8 @@ public class MainFrame extends JFrame implements ActionListener {
 	private DefaultTableModel model_1;
 	private TableRowSorter sorter;
 	private TableRowSorter sorter_1;
-	private String[] columnNames = {"계좌번호", "예금주", "잔액", "등급"};
-	private String[] columnNames_1 = {"날짜", "내역"};
+	private String[] columnNames = { "계좌번호", "예금주", "잔액", "등급" };
+	private String[] columnNames_1 = { "날짜", "내역" };
 	private JTextField findbTf;
 	private JTextField findaTf;
 	private AccountManager am;
@@ -67,7 +67,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		});
 		setResizable(false);
 		getContentPane().setLayout(null);
-		
+
 		findbTf = new JTextField();
 		findbTf.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent e) {
@@ -86,7 +86,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		findbTf.setBounds(500, 157, 234, 28);
 		getContentPane().add(findbTf);
 		findbTf.setColumns(10);
-		
+
 		findaTf = new JTextField();
 		findaTf.addKeyListener(new KeyAdapter() {
 			public void keyReleased(KeyEvent e) {
@@ -105,44 +105,49 @@ public class MainFrame extends JFrame implements ActionListener {
 		findaTf.setBounds(92, 157, 283, 28);
 		getContentPane().add(findaTf);
 		findaTf.setColumns(10);
-		
+
 		JPanel menuPanel = new JPanel();
-		menuPanel.setBorder(new TitledBorder(null, "\uBA54\uB274", TitledBorder.CENTER, TitledBorder.TOP, null, null));
+		menuPanel.setBorder(new TitledBorder(null, "\uBA54\uB274",
+				TitledBorder.CENTER, TitledBorder.TOP, null, null));
 		menuPanel.setBounds(204, 28, 390, 96);
 		getContentPane().add(menuPanel);
 		menuPanel.setLayout(null);
-		
+
 		JButton newaccountBtn = new JButton("계좌 개설");
 		newaccountBtn.addActionListener(this);
 		newaccountBtn.setBounds(16, 26, 117, 29);
 		menuPanel.add(newaccountBtn);
-		
+
 		JButton removeaccountBtn = new JButton("계좌 폐쇄");
 		removeaccountBtn.addActionListener(this);
 		removeaccountBtn.setBounds(135, 26, 117, 29);
 		menuPanel.add(removeaccountBtn);
-		
+
 		JButton depositBtn = new JButton("입금");
 		depositBtn.addActionListener(this);
 		depositBtn.setBounds(259, 26, 117, 29);
 		menuPanel.add(depositBtn);
-		
+
 		JButton drawingBtn = new JButton("출금");
 		drawingBtn.addActionListener(this);
 		drawingBtn.setBounds(16, 57, 117, 29);
 		menuPanel.add(drawingBtn);
-		
+
 		JButton transferBtn = new JButton("송금");
 		transferBtn.addActionListener(this);
 		transferBtn.setBounds(135, 57, 117, 29);
 		menuPanel.add(transferBtn);
-		
+
 		JButton interestBtn = new JButton("이자 발급");
 		interestBtn.addActionListener(this);
 		interestBtn.setBounds(259, 57, 117, 29);
 		menuPanel.add(interestBtn);
-		
-		model = new DefaultTableModel(columnNames,0) {public boolean isCellEditable(int rowIndex, int mColIndex) {return false;}};
+
+		model = new DefaultTableModel(columnNames, 0) {
+			public boolean isCellEditable(int rowIndex, int mColIndex) {
+				return false;
+			}
+		};
 		sorter = new TableRowSorter(model);
 		table = new JTable(model);
 		table.setRowSorter(sorter);
@@ -152,8 +157,10 @@ public class MainFrame extends JFrame implements ActionListener {
 				int selection = table.getSelectedRow();
 				int real_selection = table.convertRowIndexToModel(selection);
 				model_1.setRowCount(0);
-				for (int i=0;i<am.getAccounts().get(real_selection).getList().size();i++) {
-					model_1.addRow(am.getAccounts().get(real_selection).toModel(i));
+				for (int i = 0; i < am.getAccounts().get(real_selection)
+						.getList().size(); i++) {
+					model_1.addRow(am.getAccounts().get(real_selection)
+							.toModel(i));
 				}
 			}
 		});
@@ -161,60 +168,65 @@ public class MainFrame extends JFrame implements ActionListener {
 		table.getColumnModel().getColumn(1).setPreferredWidth(40);
 		table.getColumnModel().getColumn(2).setPreferredWidth(80);
 		table.getColumnModel().getColumn(3).setPreferredWidth(10);
-		
-		model_1 = new DefaultTableModel(columnNames_1,0) {public boolean isCellEditable(int rowIndex, int mColIndex) {return false;}};
+
+		model_1 = new DefaultTableModel(columnNames_1, 0) {
+			public boolean isCellEditable(int rowIndex, int mColIndex) {
+				return false;
+			}
+		};
 		sorter_1 = new TableRowSorter(model_1);
 		table_1 = new JTable(model_1);
 		table_1.setRowSorter(sorter_1);
 		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		table_1.getColumnModel().getColumn(0).setPreferredWidth(40);
 		table_1.getColumnModel().getColumn(1).setPreferredWidth(100);
-		
+
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(38, 191, 340, 249);
 		getContentPane().add(scrollPane);
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane(table_1);
 		scrollPane_1.setBounds(440, 192, 294, 248);
 		getContentPane().add(scrollPane_1);
-		
+
 		JLabel label = new JLabel("검색");
 		label.setBorder(null);
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 		label.setBounds(38, 159, 51, 24);
 		getContentPane().add(label);
-		
+
 		JLabel label_1 = new JLabel("검색");
 		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_1.setBorder(null);
 		label_1.setBounds(440, 159, 51, 24);
 		getContentPane().add(label_1);
-		
+
 		resetTable();
-		
+
 		Dimension frameSize = this.getSize();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		this.setLocation((screenSize.width - frameSize.width)/2, (screenSize.height - frameSize.height)/2);
-		
+		this.setLocation((screenSize.width - frameSize.width) / 2,
+				(screenSize.height - frameSize.height) / 2);
+
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
-		
+
 		JMenu menu = new JMenu("메뉴");
 		menuBar.add(menu);
-		
+
 		JMenuItem Idmenuitem = new JMenuItem("ID 변경");
 		Idmenuitem.addActionListener(this);
 		menu.add(Idmenuitem);
-		
+
 		JMenuItem passwdmenuitem = new JMenuItem("비밀번호 변경");
 		passwdmenuitem.addActionListener(this);
 		menu.add(passwdmenuitem);
 		setVisible(true);
 	}
-	
+
 	public void actionPerformed(ActionEvent e) {
 		String text = e.getActionCommand();
-		if (text.equals("ID 변경")) 
+		if (text.equals("ID 변경"))
 			new idDialog(am);
 		else if (text.equals("비밀번호 변경"))
 			new passwdDialog(am);
@@ -223,8 +235,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		else if (text.equals("이자 발급")) {
 			am.interest();
 			resetTable();
-		}
-		else {
+		} else {
 			int selection = table.getSelectedRow();
 			if (selection != -1) {
 				int real_selection = table.convertRowIndexToModel(selection);
@@ -239,14 +250,15 @@ public class MainFrame extends JFrame implements ActionListener {
 					new transferDialog(am, real_selection, model);
 				}
 			} else {
-				JOptionPane.showMessageDialog(null, "계좌를 선택해주세요.", "오류", JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "계좌를 선택해주세요.", "오류",
+						JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
-	
+
 	public void resetTable() {
 		model.setRowCount(0);
-		for (int i=0;i<am.getAccounts().size();i++) {
+		for (int i = 0; i < am.getAccounts().size(); i++) {
 			model.addRow(am.getAccounts().get(i).toModel());
 		}
 	}
