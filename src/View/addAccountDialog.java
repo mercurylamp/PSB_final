@@ -1,5 +1,7 @@
 package View;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -9,6 +11,7 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableModel;
 
 import Model.AccountManager;
 
@@ -17,11 +20,15 @@ public class addAccountDialog extends JDialog implements ActionListener {
 	private JComboBox comboBox;
 	private JButton openBtn;
 	private AccountManager am;
+	private DefaultTableModel model;
 	private String[] combobox = {"1", "2", "3"};
-	public addAccountDialog(AccountManager am) {
+	
+	public addAccountDialog(AccountManager am, DefaultTableModel model) {
 		setTitle("계좌 개설");
 		this.am = am;
+		this.model = model;
 		setSize(250, 140);
+		setResizable(false);
 		getContentPane().setLayout(null);
 		
 		JLabel label = new JLabel("이름");
@@ -47,9 +54,20 @@ public class addAccountDialog extends JDialog implements ActionListener {
 		openBtn.addActionListener(this);
 		openBtn.setBounds(64, 76, 117, 29);
 		getContentPane().add(openBtn);
+		
+		Dimension dialogSize = this.getSize();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		this.setLocation((screenSize.width - dialogSize.width)/2, (screenSize.height - dialogSize.height)/2);
+		setVisible(true);
 	}
 	
 	public void actionPerformed(ActionEvent e) {
 		am.addAccount(textField.getText(), Integer.parseInt(combobox[comboBox.getSelectedIndex()]));
+		
+		model.setRowCount(0);
+		for (int i=0;i<am.getAccounts().size();i++) {
+			model.addRow(am.getAccounts().get(i).toModel());
+		}
+		dispose();
 	}
 }

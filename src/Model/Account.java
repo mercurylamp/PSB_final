@@ -1,9 +1,14 @@
 package Model;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
+import java.util.Vector;
 
 public class Account implements Serializable {
+	private static final long serialVersionUID = 123456789L;
 	private String num;
 	private String name;
 	private int amount;
@@ -16,6 +21,9 @@ public class Account implements Serializable {
 		this.amount = amount;
 		this.grade = grade;
 		list = new ArrayList<String>();
+		SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/", Locale.KOREA);
+		String today = date.format(new Date());
+		addList(today + "계좌 개설");
 	}
 	
 	public void addAmount(int money) {
@@ -60,5 +68,16 @@ public class Account implements Serializable {
 	
 	public ArrayList<String> getList() {
 		return this.list;
+	}
+	
+	public Object[] toModel() {
+		Object[] list = {getNum(), getName(), getAmount(), getGrade()};
+		return list;
+	}
+	
+	public Object[] toModel(int index) {
+		String[] ex = this.list.get(index).split("/");
+		Object[] list = {ex[0], ex[1]};
+		return list;
 	}
 }

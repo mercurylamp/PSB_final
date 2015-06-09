@@ -33,7 +33,7 @@ public class loginDialog extends JDialog implements ActionListener {
 		lblId.setBounds(31, 20, 85, 16);
 		getContentPane().add(lblId);
 		
-		JLabel lblPassword = new JLabel("PASSWORD");
+		JLabel lblPassword = new JLabel("비밀번호");
 		lblPassword.setHorizontalAlignment(SwingConstants.RIGHT);
 		lblPassword.setBounds(31, 48, 85, 16);
 		getContentPane().add(lblPassword);
