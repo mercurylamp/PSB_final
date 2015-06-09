@@ -48,7 +48,7 @@ public class MainFrame extends JFrame implements ActionListener {
 	private TableRowSorter sorter;
 	private TableRowSorter sorter_1;
 	private String[] columnNames = { "계좌번호", "예금주", "잔액", "등급" };
-	private String[] columnNames_1 = { "날짜", "내역" };
+	private String[] columnNames_1 = { "날짜", "내역", "잔액" };
 	private JTextField findbTf;
 	private JTextField findaTf;
 	private AccountManager am;
@@ -83,7 +83,7 @@ public class MainFrame extends JFrame implements ActionListener {
 				}
 			}
 		});
-		findbTf.setBounds(500, 157, 234, 28);
+		findbTf.setBounds(451, 157, 303, 28);
 		getContentPane().add(findbTf);
 		findbTf.setColumns(10);
 
@@ -178,15 +178,16 @@ public class MainFrame extends JFrame implements ActionListener {
 		table_1 = new JTable(model_1);
 		table_1.setRowSorter(sorter_1);
 		table_1.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		table_1.getColumnModel().getColumn(0).setPreferredWidth(40);
-		table_1.getColumnModel().getColumn(1).setPreferredWidth(100);
+		table_1.getColumnModel().getColumn(0).setPreferredWidth(50);
+		table_1.getColumnModel().getColumn(1).setPreferredWidth(110);
+		table_1.getColumnModel().getColumn(2).setPreferredWidth(15);
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setBounds(38, 191, 340, 249);
 		getContentPane().add(scrollPane);
 
 		JScrollPane scrollPane_1 = new JScrollPane(table_1);
-		scrollPane_1.setBounds(440, 192, 294, 248);
+		scrollPane_1.setBounds(400, 192, 361, 248);
 		getContentPane().add(scrollPane_1);
 
 		JLabel label = new JLabel("검색");
@@ -198,7 +199,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		JLabel label_1 = new JLabel("검색");
 		label_1.setHorizontalAlignment(SwingConstants.CENTER);
 		label_1.setBorder(null);
-		label_1.setBounds(440, 159, 51, 24);
+		label_1.setBounds(400, 159, 51, 24);
 		getContentPane().add(label_1);
 
 		resetTable();

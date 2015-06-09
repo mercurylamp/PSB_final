@@ -24,7 +24,7 @@ public class Account implements Serializable {
 		SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/",
 				Locale.KOREA);
 		String today = date.format(new Date());
-		addList(today + "계좌 개설");
+		addList(today + "계좌 개설/" + getAmount());
 	}
 
 	public void addAmount(int money) {
@@ -78,7 +78,7 @@ public class Account implements Serializable {
 
 	public Object[] toModel(int index) {
 		String[] ex = this.list.get(index).split("/");
-		Object[] list = { ex[0], ex[1] };
+		Object[] list = { ex[0], ex[1], ex[2] };
 		return list;
 	}
 }

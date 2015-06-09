@@ -50,7 +50,7 @@ public class AccountManager {
 				Locale.KOREA);
 		String today = date.format(new Date());
 		account.get(index).addAmount(money);
-		account.get(index).addList(today + money + "원 입금");
+		account.get(index).addList(today + money + "원 입금/" + account.get(index).getAmount());
 	}
 
 	public void draw(int index, int money) {
@@ -58,7 +58,7 @@ public class AccountManager {
 				Locale.KOREA);
 		String today = date.format(new Date());
 		account.get(index).drawAmount(money);
-		account.get(index).addList(today + money + "원 출금");
+		account.get(index).addList(today + money + "원 출금/" + account.get(index).getAmount());
 	}
 
 	public void transfer(int from, int to, int money) {
@@ -68,28 +68,30 @@ public class AccountManager {
 		account.get(from).drawAmount(money);
 		account.get(to).addAmount(money);
 		account.get(from).addList(
-				today + account.get(to).getName() + "님께 " + money + "원 송금");
+				today + account.get(to).getName() + "님께 " + money + "원 송금/" + account.get(from).getAmount());
 		account.get(to).addList(
-				today + account.get(from).getName() + "님께서 " + money + "원 송금");
+				today + account.get(from).getName() + "님께서 " + money + "원 송금/" + account.get(to).getAmount());
 	}
 
 	public void interest() {
 		for (int i = 0; i < account.size(); i++) {
 			int amount = account.get(i).getAmount();
 			int grade = account.get(i).getGrade();
+			SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/",
+					Locale.KOREA);
+					String today = date.format(new Date());
 			if (amount < 0)
 				continue;
 			if (grade == 1) {
 				account.get(i).addAmount((int) (amount * 0.05));
+				account.get(i).addList(today + (int) (amount * 0.05) + "원 이자 발급/" + account.get(i).getAmount());
 			} else if (grade == 2) {
 				account.get(i).addAmount((int) (amount * 0.03));
+				account.get(i).addList(today + (int) (amount * 0.03) + "원 이자 발급/" + account.get(i).getAmount());
 			} else if (grade == 3) {
 				account.get(i).addAmount((int) (amount * 0.01));
+				account.get(i).addList(today + (int) (amount * 0.01) + "원 이자 발급/" + account.get(i).getAmount());
 			}
-			SimpleDateFormat date = new SimpleDateFormat("yyyy년 MM월 dd일/",
-					Locale.KOREA);
-			String today = date.format(new Date());
-			account.get(i).addList(today + (int) (amount * 0.05) + "원 이자 발급");
 		}
 	}
 
@@ -135,9 +137,8 @@ public class AccountManager {
 
 	public boolean loginCheck(String id, char[] passwd) {
 		if (this.id.equals(id)) {
-			int length = passwd.length > this.passwd.length ? this.passwd.length
-					: passwd.length;
-			for (int i = 0; i < length; i++) {
+			if (passwd.length != this.passwd.length) return false;
+			for (int i = 0; i < passwd.length; i++) {
 				if (this.passwd[i] != passwd[i])
 					return false;
 			}
