@@ -45,7 +45,7 @@ public class idDialog extends JDialog implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		am.setId(idTf.getText());
+		am.getId().setId(idTf.getText());
 		dispose();
 	}
 }

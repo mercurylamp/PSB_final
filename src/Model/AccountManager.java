@@ -4,9 +4,11 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Locale;
 import java.util.Random;
@@ -15,10 +17,10 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 public class AccountManager {
-	private String id = "admin";
-	private char[] passwd = { '1', '1', '1', '1' };
+	private Id id = new Id();
 	private ArrayList<Account> account = new ArrayList<Account>();
 	private HashSet<String> nums = new HashSet<String>();
+	private HashMap<Account, statement> states = new HashMap<Account, statement>();
 
 	public AccountManager() {
 		openFile();
@@ -27,21 +29,28 @@ public class AccountManager {
 	public void addAccount(String name, int grade) {
 		Random rand = new Random();
 		String num = "110-";
-		num += rand.nextInt(999);
+		for (int i=0;i<3;i++)
+			num += String.valueOf(rand.nextInt(9));
 		num += "-";
-		num += rand.nextInt(999999);
+		for (int i=0;i<6;i++)
+			num += String.valueOf(rand.nextInt(9));
 		while (nums.contains(num)) {
 			num = "110-";
-			num += rand.nextInt(999);
+			for (int i=0;i<3;i++)
+				num += String.valueOf(rand.nextInt(9));
 			num += "-";
-			num += rand.nextInt(999999);
+			for (int i=0;i<6;i++)
+				num += String.valueOf(rand.nextInt(9));
 		}
 		nums.add(num);
-		account.add(new Account(num, name, 0, grade));
+		Account tmp = new Account(num, name, 0, grade);
+		account.add(tmp);
+		states.put(tmp, new statement());
 	}
 
 	public void removeAccount(int index) {
 		nums.remove(account.get(index).getNum());
+		states.remove(account.get(index));
 		account.remove(index);
 	}
 
@@ -50,7 +59,7 @@ public class AccountManager {
 				Locale.KOREA);
 		String today = date.format(new Date());
 		account.get(index).addAmount(money);
-		account.get(index).addList(today + money + "원 입금/" + account.get(index).getAmount());
+		states.get(account.get(index)).addList(today + money + "원 입금/" + account.get(index).getAmount());
 	}
 
 	public void draw(int index, int money) {
@@ -58,7 +67,7 @@ public class AccountManager {
 				Locale.KOREA);
 		String today = date.format(new Date());
 		account.get(index).drawAmount(money);
-		account.get(index).addList(today + money + "원 출금/" + account.get(index).getAmount());
+		states.get(account.get(index)).addList(today + money + "원 출금/" + account.get(index).getAmount());
 	}
 
 	public void transfer(int from, int to, int money) {
@@ -67,10 +76,8 @@ public class AccountManager {
 		String today = date.format(new Date());
 		account.get(from).drawAmount(money);
 		account.get(to).addAmount(money);
-		account.get(from).addList(
-				today + account.get(to).getName() + "님께 " + money + "원 송금/" + account.get(from).getAmount());
-		account.get(to).addList(
-				today + account.get(from).getName() + "님께서 " + money + "원 송금/" + account.get(to).getAmount());
+		states.get(account.get(from)).addList(today + account.get(to).getName() + "님께 " + money + "원 송금/" + account.get(from).getAmount());
+		states.get(account.get(to)).addList(today + account.get(to).getName() + "님께 " + money + "원 송금/" + account.get(to).getAmount());
 	}
 
 	public void interest() {
@@ -84,13 +91,13 @@ public class AccountManager {
 				continue;
 			if (grade == 1) {
 				account.get(i).addAmount((int) (amount * 0.05));
-				account.get(i).addList(today + (int) (amount * 0.05) + "원 이자 발급/" + account.get(i).getAmount());
+				states.get(account.get(i)).addList(today + (int) (amount * 0.05) + "원 이자 발급/" + account.get(i).getAmount());
 			} else if (grade == 2) {
 				account.get(i).addAmount((int) (amount * 0.03));
-				account.get(i).addList(today + (int) (amount * 0.03) + "원 이자 발급/" + account.get(i).getAmount());
+				states.get(account.get(i)).addList(today + (int) (amount * 0.03) + "원 이자 발급/" + account.get(i).getAmount());
 			} else if (grade == 3) {
 				account.get(i).addAmount((int) (amount * 0.01));
-				account.get(i).addList(today + (int) (amount * 0.01) + "원 이자 발급/" + account.get(i).getAmount());
+				states.get(account.get(i)).addList(today + (int) (amount * 0.03) + "원 이자 발급/" + account.get(i).getAmount());
 			}
 		}
 	}
@@ -136,27 +143,17 @@ public class AccountManager {
 	}
 
 	public boolean loginCheck(String id, char[] passwd) {
-		if (this.id.equals(id)) {
-			if (passwd.length != this.passwd.length) return false;
-			for (int i = 0; i < passwd.length; i++) {
-				if (this.passwd[i] != passwd[i])
-					return false;
-			}
-			return true;
+		if (this.id.getId().equals(id)) {
+			if (encrypt(String.valueOf(passwd)).equals(this.id.getPasswd())) 
+				return true;
+			else
+				return false;
 		} else
 			return false;
 	}
 
 	public ArrayList<Account> getAccounts() {
 		return account;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public void setPasswd(char[] passwd) {
-		this.passwd = passwd;
 	}
 
 	public boolean isDigit(String s) {
@@ -175,9 +172,9 @@ public class AccountManager {
 			fout = new FileOutputStream("bank.dat");
 			oos = new ObjectOutputStream(fout);
 			oos.writeObject(id);
-			oos.writeObject(passwd);
 			oos.writeObject(account);
 			oos.writeObject(nums);
+			oos.writeObject(states);
 			oos.reset();
 			oos.close();
 			fout.close();
@@ -192,14 +189,53 @@ public class AccountManager {
 		try {
 			fin = new FileInputStream("bank.dat");
 			ois = new ObjectInputStream(fin);
-			id = (String) ois.readObject();
-			passwd = (char[]) ois.readObject();
+			id = (Id) ois.readObject();
 			account = (ArrayList<Account>) ois.readObject();
 			nums = (HashSet<String>) ois.readObject();
+			states = (HashMap<Account, statement>) ois.readObject();
 			ois.close();
 			fin.close();
 		} catch (Exception e) {
 
 		}
+	}
+	
+	public String encrypt(String planText) {
+		try {
+			MessageDigest md = MessageDigest.getInstance("SHA-256");
+			md.update(planText.getBytes());
+			byte byteData[] = md.digest();
+			
+			StringBuffer sb = new StringBuffer();
+			for (int i=0;i<byteData.length;i++) {
+				sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
+			}
+			
+			StringBuffer hexString = new StringBuffer();
+			for (int i=0;i<byteData.length;i++) {
+				String hex = Integer.toHexString(0xff & byteData[i]);
+				if (hex.length()==1) {
+					hexString.append('0');
+				}
+				hexString.append(hex);
+			}
+			
+			return hexString.toString();
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException();
+		}
+	}
+	
+	public HashSet<String> getNums() {
+		return nums;
+	}
+	
+	public Id getId() {
+		return id;
+	}
+	
+	public HashMap<Account, statement> getStatement() {
+		return states;
 	}
 }

@@ -45,7 +45,7 @@ public class passwdDialog extends JDialog implements ActionListener {
 	}
 	
 	public void actionPerformed(ActionEvent e) {
-		am.setPasswd(passwdTf.getPassword());
+		am.getId().setPasswd(am.encrypt(String.valueOf(passwdTf.getPassword())));
 		dispose();
 	}
 }

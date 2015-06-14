@@ -58,7 +58,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		this.am = am;
 		setSize(800, 500);
 		setTitle("PSB 은행");
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
 		addWindowListener(new WindowAdapter() {
 			public void windowClosing(WindowEvent e) {
 				am.saveFile();
@@ -157,9 +157,9 @@ public class MainFrame extends JFrame implements ActionListener {
 				int selection = table.getSelectedRow();
 				int real_selection = table.convertRowIndexToModel(selection);
 				model_1.setRowCount(0);
-				for (int i = 0; i < am.getAccounts().get(real_selection)
+				for (int i = 0; i < am.getStatement().get(am.getAccounts().get(real_selection))
 						.getList().size(); i++) {
-					model_1.addRow(am.getAccounts().get(real_selection)
+					model_1.addRow(am.getStatement().get(am.getAccounts().get(real_selection))
 							.toModel(i));
 				}
 			}
@@ -231,8 +231,13 @@ public class MainFrame extends JFrame implements ActionListener {
 			new idDialog(am);
 		else if (text.equals("비밀번호 변경"))
 			new passwdDialog(am);
-		else if (text.equals("계좌 개설"))
-			new addAccountDialog(am, model);
+		else if (text.equals("계좌 개설")) {
+			if (am.getNums().size() == 1000000000000l) {
+				JOptionPane.showMessageDialog(null, "계좌를 개설할 수 없습니다.",
+						"오류", JOptionPane.ERROR_MESSAGE);
+			} else
+				new addAccountDialog(am, model);
+		}
 		else if (text.equals("이자 발급")) {
 			am.interest();
 			resetTable();
