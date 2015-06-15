@@ -112,7 +112,7 @@ public class depositDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (am.isDigit(moneyTf.getText())) {
+		if (am.isDigit(moneyTf.getText()) && Integer.parseInt(moneyTf.getText()) >= 0) {
 			am.deposit(index, Integer.parseInt(moneyTf.getText()));
 
 			model.setRowCount(0);

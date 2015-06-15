@@ -134,7 +134,7 @@ public class transferDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (am.isDigit(moneyTf.getText())) {
+		if (am.isDigit(moneyTf.getText()) && Integer.parseInt(moneyTf.getText()) >= 0) {
 			if (amount >= Integer.parseInt(moneyTf.getText())
 					|| (amount < Integer.parseInt(moneyTf.getText())
 							&& grade == 1 && amount

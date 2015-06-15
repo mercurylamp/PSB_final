@@ -167,7 +167,7 @@ public class MainFrame extends JFrame implements ActionListener {
 		table.getColumnModel().getColumn(0).setPreferredWidth(100);
 		table.getColumnModel().getColumn(1).setPreferredWidth(40);
 		table.getColumnModel().getColumn(2).setPreferredWidth(80);
-		table.getColumnModel().getColumn(3).setPreferredWidth(10);
+		table.getColumnModel().getColumn(3).setPreferredWidth(30);
 
 		model_1 = new DefaultTableModel(columnNames_1, 0) {
 			public boolean isCellEditable(int rowIndex, int mColIndex) {

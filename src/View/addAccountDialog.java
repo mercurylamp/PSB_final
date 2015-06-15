@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableModel;
@@ -63,13 +64,18 @@ public class addAccountDialog extends JDialog implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		am.addAccount(textField.getText(),
-				Integer.parseInt(combobox[comboBox.getSelectedIndex()]));
+		if (!textField.getText().equals("")) {
+			am.addAccount(textField.getText(),
+					Integer.parseInt(combobox[comboBox.getSelectedIndex()]));
 
-		model.setRowCount(0);
-		for (int i = 0; i < am.getAccounts().size(); i++) {
-			model.addRow(am.getAccounts().get(i).toModel());
+			model.setRowCount(0);
+			for (int i = 0; i < am.getAccounts().size(); i++) {
+				model.addRow(am.getAccounts().get(i).toModel());
+			}
+			dispose();
+		} else {
+			JOptionPane.showMessageDialog(null, "이름을 입력해주세요.", "오류",
+					JOptionPane.ERROR_MESSAGE);
 		}
-		dispose();
 	}
 }
